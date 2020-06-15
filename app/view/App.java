@@ -96,6 +96,7 @@ public class App extends JFrame {
                 ArrayList<Node> path2 = maze.BFS();
                 mazePanel2.move(path2);
                 mazePanel2.reload(maze.getMatrix());
+                status = 0;
                 System.out.println("Clicked Solve");
 
             }
