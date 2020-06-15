@@ -40,18 +40,24 @@ public class App extends JFrame {
     private String message = "1. Click \"Play\" to start a game. \n"
             + "2. Player 1 using W, A, S, D to move Up, Left, Down, Right. \n"
             + "    Player 2 using I, J, K, L to move Up, Left, Down, Right. \n"
-            + "3. Click \"Solve\" to find the path.\n" 
-            + "4. Click \" Change Maze\" to create a new maze.\n"
+            + "3. Click \"Solve\" to find the path.\n" + "4. Click \" Change Maze\" to create a new maze.\n"
             + "5. Click \"New Game\" to create a new game.\n";
 
     public App(int size) {
         if (size != 0) {
             this.mazeSize = size;
             this.maze = new Maze(mazeSize);
+            this.matrix = maze.getMatrix();
             this.currentPos = new Integer[2];
+            this.currentPos2 = new Integer[2];
             currentPos[0] = 0;
             currentPos[1] = 1;
+            currentPos2[0] = 0;
+            currentPos2[1] = 1;
+            this.status = 0;
         }
+
+
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(1300, 700);
         this.setLayout(null);
@@ -71,8 +77,9 @@ public class App extends JFrame {
             public void actionPerformed(ActionEvent arg0) {
                 changeMaze.setEnabled(false);
                 solveButton.setEnabled(true);
-                maze.writer();
+                //maze.writer();
                 status = 1;
+                System.out.println("Status: " + status);
                 System.out.println("Clicked Play");
 
             }
@@ -86,9 +93,6 @@ public class App extends JFrame {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 ArrayList<Node> path1 = maze.findPath();
-                // for (int i = 0; i < path.size(); i++) {
-                // System.out.println(path.get(i));
-                // }
 
                 mazePanel1.move(path1);
                 mazePanel1.reload(maze.getMatrix());
@@ -103,23 +107,7 @@ public class App extends JFrame {
 
         });
         changeMaze = new JButton("ChangeMaze");
-        changeMaze.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                String size = JOptionPane.showInputDialog(null, "Input size");
 
-                if (!size.matches("\\d+")) {
-                    JOptionPane.showMessageDialog(null, "Invalid size");
-                }
-
-                dispose();
-                App app = new App(Integer.valueOf(size));
-                app.setVisible(true);
-                System.out.println("Clicked Change Maze");
-
-            }
-
-        });
         newGameButton = new JButton("New Game");
 
         solveButton.setForeground(fore);
@@ -127,6 +115,23 @@ public class App extends JFrame {
 
         changeMaze.setForeground(fore);
         changeMaze.setBackground(buttonColor);
+        changeMaze.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                String size = JOptionPane.showInputDialog(null, "Input size");
+
+                if (!size.matches("\\d+")) {
+                    JOptionPane.showMessageDialog(null, "Invalid size");
+
+                } else {
+                    dispose();
+                    App app = new App(Integer.valueOf(size));
+                    app.setVisible(true);
+                }
+
+                System.out.println("Clicked Change Maze");
+            }
+        });
 
         newGameButton.setForeground(fore);
         newGameButton.setBackground(buttonColor);
@@ -140,6 +145,8 @@ public class App extends JFrame {
                 mazePanel2.reload(maze.getMatrix());
                 currentPos[0] = 0;
                 currentPos[1] = 1;
+                currentPos2[0] = 0;
+                currentPos2[1] = 1;
                 status = 0;
                 solveButton.setEnabled(false);
                 changeMaze.setEnabled(true);
@@ -155,7 +162,6 @@ public class App extends JFrame {
         tutorial.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-
                 JOptionPane.showMessageDialog(null, message);
             }
 
